@@ -1,14 +1,8 @@
-## clangtool
+## Using LLVM plugins with clang
 
-When writing an LLVM pass, the straightforward way to use it is to produce LLVM IR code with `clang -emit-llvm`, then run your tool with `opt`, then link it (`llvm-link`), ccompile it down to a native object file (`llc`), and finally produce a binary (`gcc`). This works, and for development, it's not a terrible way to do things.
+The [LLVM docs](http://llvm.org/docs/WritingAnLLVMPass.html) suggest using `opt` to load and run custom passes. This works, but for certain tasks, like building programs with complicated Makefiles or unusual environments, it is less than ideal. Instead, LLVM provides a hook to allow plugin modules to be run automatically when loaded by clang. This lets you add a couple of flags and use clang (and your pass) as a drop-in replacement for your normal C compiler. These files demonstrate how that works.
 
-When using custom LLVM passes as a research tool, however, it's often necessary to do things like...shudder...build SPEC. This *is* a terrible way to do things, mostly because that build flow for a custom LLVM pass isn't a drop-in replacement for `$(CC)`, and most complicated projects don't expect that.
-
-This can be solved by adding a little bit of code at the end of your LLVM pass which lets Clang discover and add your custom pass to its existing list. That way, instead of having to use all five of the separate steps above, you can just run `clang` with a couple extra options, and everything works.
-
-----
-
-Using `clangtool`:
+### Using clangtool:
 
 Two steps:
 
@@ -18,5 +12,8 @@ Two steps:
 
         clang -Xclang -load -Xclang <custom-pass>.so ...
 
-That's it. Your pass will automatically be run at the point you specified in the code.
+That's it. Your pass will be run automatically. You can specify these with `CFLAGS` in a Makefile, override `CC` or `CXX`, or write a script to wrap clang and use that.
 
+### How it works:
+
+The key is a static class called `RegisterStandardPasses`, which is defined in the `PassManagerBuilder.h` header. The constuctor for this class calls the `addGlobalExtension` function, which in turn adds your custom pass to the list of extensions that are loaded by default.

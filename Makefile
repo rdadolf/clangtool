@@ -19,7 +19,13 @@ clangtool.so : %.so: %.cpp
 
 CLANGTOOL_FLAGS=-Xclang -load -Xclang clangtool.so
 
-test: test.c
+.PHONY: test testO0 testO2
+test: testO0 testO2
+
+testO0: test.c clangtool.so
+	$(LLVM_BIN)/clang $(CLANGTOOL_FLAGS) -O0 -o test test.c
+
+testO2: test.c clangtool.so
 	$(LLVM_BIN)/clang $(CLANGTOOL_FLAGS) -O2 -o test test.c
 
 clean:

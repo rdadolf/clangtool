@@ -10,7 +10,6 @@ int fib(int x) {
 int main(int argc, char **argv)
 {
   int i;
-  for(i=0; i<6; i++)
-    printf("Hello Fibworld(%d): %d\n", i, fib(i));
+  printf("fib(5): %d\n", fib(5));
   return 0;
 }

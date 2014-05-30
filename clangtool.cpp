@@ -29,21 +29,21 @@ char ClangTool::ID = 0; // LLVM ignores the actual value
 static RegisterPass<ClangTool> X("clangtool", "Example pass", false, false);
 
 // Pass loading stuff
-// Run: clang -Xclang -load -Xclang pass.so ...
+// To use, run: clang -Xclang -load -Xclang <your-pass>.so <other-args> ...
 
 // This function is of type PassManagerBuilder::ExtensionFn
 static void loadPass(const PassManagerBuilder &Builder, PassManagerBase &PM) {
   PM.add(new ClangTool());
 }
-// Declares a static instance of the RegisterStandardPasses class, which gets
-// recognized by Clang, running loadPass automatically.
-static RegisterStandardPasses clangtoolLoader(PassManagerBuilder::EP_OptimizerLast, loadPass);
+// These constructors add our pass to a list of global extensions.
+static RegisterStandardPasses clangtoolLoader_Ox(PassManagerBuilder::EP_OptimizerLast, loadPass);
+static RegisterStandardPasses clangtoolLoader_O0(PassManagerBuilder::EP_EnabledOnOptLevel0, loadPass);
 
 // Note: The location EP_OptimizerLast places this pass at the end of the list
 // of *optimizations*. That means on -O0, it does not get run.
 //
-// If you want to run on -O0, you can use EP_EnabledOnOptLevel0, but be aware
-// that under -O1, 2, and 3, the pass will be run much earlier (and llvm will
-// optimize the code after your pass runs).
-// 
-// Check the header file PassManagerBuilder.h for details.
+// In general, adding your pass twice will cause it to run twice, but in this
+// particular case, the two are disjoint (EP_EnabledOnOptLevel0 only runs if
+// you're in -O0, and EP_OptimizerLast only runs if you're not). You can check
+// include/llvm/Transforms/IPO/PassManagerBuilder.h header and
+// lib/Transforms/IPO/PassManagerBuilder.cpp file for the exact behavior.
