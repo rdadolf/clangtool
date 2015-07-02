@@ -1,6 +1,3 @@
-LLVM_BIN?=$(error Please set LLVM_BIN to wherever llvm and clang are installed)
-# LLVM_BIN should be the bin/ directory, just like if you were adding it to your path.
-
 all: clangtool.so
 
 # Flags for building shared libraries.
@@ -15,7 +12,7 @@ ifeq ($(SYSTEM), Linux)
 endif
 
 clangtool.so : %.so: %.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@ `$(LLVM_BIN)/llvm-config --cxxflags` $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $< -o $@ `llvm-config --cxxflags` $(LDFLAGS)
 
 CLANGTOOL_FLAGS=-Xclang -load -Xclang clangtool.so
 
@@ -23,10 +20,10 @@ CLANGTOOL_FLAGS=-Xclang -load -Xclang clangtool.so
 test: testO0 testO2
 
 testO0: test.c clangtool.so
-	$(LLVM_BIN)/clang $(CLANGTOOL_FLAGS) -O0 -o test test.c
+	clang $(CLANGTOOL_FLAGS) -O0 -o test test.c
 
 testO2: test.c clangtool.so
-	$(LLVM_BIN)/clang $(CLANGTOOL_FLAGS) -O2 -o test test.c
+	clang $(CLANGTOOL_FLAGS) -O2 -o test test.c
 
 clean:
 	rm -f clangtool.so test
