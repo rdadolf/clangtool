@@ -8,6 +8,8 @@ addons:
     sources:
       - llvm-toolchain-precise-3.6
     packages:
+      - libllvm3.6
+      - llvm-3.6
       - llvm-3.6-dev
 
 compiler:
