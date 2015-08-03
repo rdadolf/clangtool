@@ -6,8 +6,10 @@ sudo: false
 addons:
   apt:
     sources:
+      - ubuntu-toolchain-r-test
       - llvm-toolchain-precise-3.6
     packages:
+      - libstdc++6-4.9
       - libllvm3.6
       - llvm-3.6
       - llvm-3.6-dev
