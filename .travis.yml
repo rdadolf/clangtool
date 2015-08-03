@@ -1,11 +1,20 @@
-language: c
-install:
-  - sudo apt-get update
-  - sudo apt-get install llvm-3.3-dev
-  - sudo apt-get install clang-3.3
+language: cpp
+
+# Use containers
+sudo: false
+
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-precise-3.6
+    packages:
+      - llvm-dev-3.6
+
 compiler:
   - clang
+
 script:
   - make test
+
 notifications:
   email: false

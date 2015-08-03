@@ -16,8 +16,16 @@ clangtool.so : %.so: %.cpp
 
 CLANGTOOL_FLAGS=-Xclang -load -Xclang clangtool.so
 
-.PHONY: test testO0 testO2
-test: testO0 testO2
+.PHONY: test debug testO0 testO2
+test: debug testO0 testO2
+
+debug:
+	which clang
+	clang --version
+	which llc
+	llc --version
+	which llvm-config
+	llvm-config --version
 
 testO0: test.c clangtool.so
 	clang $(CLANGTOOL_FLAGS) -O0 -o test test.c
