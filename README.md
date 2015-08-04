@@ -1,5 +1,7 @@
 ## Using LLVM plugins with clang
 
+[![build status](https://travis-ci.org/rdadolf/clangtool.svg?branch=master)](https://travis-ci.org/rdadolf/clangtool)
+
 The [LLVM docs](http://llvm.org/docs/WritingAnLLVMPass.html) suggest using `opt` to load and run custom passes. This works, but for certain tasks, like building programs with complicated Makefiles or unusual environments, it is less than ideal. Instead, LLVM provides a hook to allow plugin modules to be run automatically when loaded by clang. This lets you add a couple of flags and use clang (and your pass) as a drop-in replacement for your normal C compiler. These files demonstrate how that works.
 
 ### Using clangtool:
