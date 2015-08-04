@@ -1,10 +1,7 @@
 all: clangtool.so
 
-# System compiler (to build the tools)
 CXX=clang++
-
-# Tool compiler (to run the tools)
-CLANG=clang
+CC=clang
 LLVM_CONFIG=llvm-config
 
 # Flags for building shared libraries.
@@ -27,10 +24,10 @@ CLANGTOOL_FLAGS=-Xclang -load -Xclang ./clangtool.so
 test: testO0 testO2
 
 testO0: test.c clangtool.so
-	$(CLANG) $(CLANGTOOL_FLAGS) -O0 -o test test.c
+	$(CC) $(CLANGTOOL_FLAGS) -O0 -o test test.c
 
 testO2: test.c clangtool.so
-	$(CLANG) $(CLANGTOOL_FLAGS) -O2 -o test test.c
+	$(CC) $(CLANGTOOL_FLAGS) -O2 -o test test.c
 
 clean:
 	rm -f clangtool.so test

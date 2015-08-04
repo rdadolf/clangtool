@@ -18,7 +18,8 @@ addons:
       - clang-3.6
 
 before_script:
-  - export CLANG=clang-3.6
+  - export CC=clang-3.6
+  - export CXX=clang++-3.6
   - export LLVM_CONFIG=llvm-config-3.6
 
 # -e == environment vars override makevars
