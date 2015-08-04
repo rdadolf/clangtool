@@ -1,5 +1,12 @@
 all: clangtool.so
 
+# System compiler (to build the tools)
+CXX=clang++
+
+# Tool compiler (to run the tools)
+CLANG=clang
+LLVM_CONFIG=llvm-config
+
 # Flags for building shared libraries.
 SYSTEM=$(shell uname)
 ifeq ($(SYSTEM), Darwin)
@@ -12,26 +19,18 @@ ifeq ($(SYSTEM), Linux)
 endif
 
 clangtool.so : %.so: %.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@ `llvm-config --cxxflags` $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $< -o $@ `$(LLVM_CONFIG) --cxxflags` $(LDFLAGS)
 
-CLANGTOOL_FLAGS=-Xclang -load -Xclang clangtool.so
+CLANGTOOL_FLAGS=-Xclang -load -Xclang ./clangtool.so
 
-.PHONY: test debug testO0 testO2
-test: debug testO0 testO2
-
-debug:
-	which clang
-	clang --version
-	which llc
-	llc --version
-	which llvm-config
-	llvm-config --version
+.PHONY: test testO0 testO2
+test: testO0 testO2
 
 testO0: test.c clangtool.so
-	clang $(CLANGTOOL_FLAGS) -O0 -o test test.c
+	$(CLANG) $(CLANGTOOL_FLAGS) -O0 -o test test.c
 
 testO2: test.c clangtool.so
-	clang $(CLANGTOOL_FLAGS) -O2 -o test test.c
+	$(CLANG) $(CLANGTOOL_FLAGS) -O2 -o test test.c
 
 clean:
 	rm -f clangtool.so test

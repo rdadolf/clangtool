@@ -1,7 +1,11 @@
 language: cpp
+# This is the system compiler, not our LLVM infrastructure
+compiler:
+  - clang
 
 # Use containers
 sudo: false
+
 
 addons:
   apt:
@@ -9,16 +13,17 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-precise-3.6
     packages:
-      - libstdc++6-4.9
-      - libllvm3.6
-      - llvm-3.6
       - llvm-3.6-dev
+      - llvm-3.6
+      - clang-3.6
 
-compiler:
-  - clang
+before_script:
+  - export CLANG=clang-3.6
+  - export LLVM_CONFIG=llvm-config-3.6
 
+# -e == environment vars override makevars
 script:
-  - make test
+  - make -e test
 
 notifications:
   email: false
